@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hard conversations, rehearsed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F2F3F6; --surface:#FFFFFF; --ink:#1A2030; --muted:#5B6275; --line:#D9DCE4;
+  --mgr:#3446B0; --mem:#9A3570; --obs:#3F7346;
+  --mgr-soft:#E6E9FA; --mem-soft:#F8E6F0; --obs-soft:#E4F0E5;
+  --seal:#1F2638; --seal-line:#2E3852; --seal-ink:#F2F3F6;
+  --warn:#9A5B00; --warn-soft:#FBF0DC;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#12151D; --surface:#1B1F2A; --ink:#E9EBF1; --muted:#A0A6B6; --line:#2D3342;
+    --mgr:#9AA7FF; --mem:#F29BCB; --obs:#96CF9B;
+    --mgr-soft:#232A4D; --mem-soft:#3A2232; --obs-soft:#213325;
+    --seal:#2A3248; --seal-line:#3A4562; --seal-ink:#E9EBF1;
+    --warn:#F0B357; --warn-soft:#3A2D16;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#12151D; --surface:#1B1F2A; --ink:#E9EBF1; --muted:#A0A6B6; --line:#2D3342;
+  --mgr:#9AA7FF; --mem:#F29BCB; --obs:#96CF9B;
+  --mgr-soft:#232A4D; --mem-soft:#3A2232; --obs-soft:#213325;
+  --seal:#2A3248; --seal-line:#3A4562; --seal-ink:#E9EBF1;
+  --warn:#F0B357; --warn-soft:#3A2D16;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.55}
+main{max-width:660px;margin:0 auto;padding:28px 20px 64px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,6vw,2.75rem);line-height:1.05;letter-spacing:-0.02em;margin:0 0 6px}
+h2{font-family:var(--display);font-weight:700;font-size:1.375rem;line-height:1.2;margin:0 0 10px}
+h3{font-family:var(--display);font-weight:700;font-size:1.0625rem;margin:18px 0 6px}
+p{margin:0 0 12px}
+.lede{color:var(--muted);margin-bottom:26px;max-width:52ch}
+.muted{color:var(--muted)}
+.small{font-size:.9375rem}
+section{margin-bottom:28px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
+.fac{border:2px dashed var(--line);background:transparent;border-radius:14px;padding:18px}
+.fac h2{font-size:1.125rem}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font:inherit;font-weight:700;border-radius:10px;padding:11px 16px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;min-height:44px}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.quiet{border-color:var(--line);font-weight:400}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,.choice:focus-visible,select:focus-visible,textarea:focus-visible,.seal:focus-visible{outline:3px solid var(--mgr);outline-offset:2px}
+select{font:inherit;padding:9px 10px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);min-height:44px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.choice{font:inherit;text-align:left;padding:16px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.choice strong{display:block;font-family:var(--display);font-size:1.125rem}
+.choice[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+@media (max-width:420px){.choices{grid-template-columns:1fr}}
+.people{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.people li{display:flex;align-items:center;gap:10px}
+.people img{width:30px;height:30px;border-radius:50%;flex:none}
+.role{font-size:.875rem;font-weight:700;border-radius:999px;padding:2px 10px}
+.role.manager{background:var(--mgr-soft);color:var(--mgr)}
+.role.member{background:var(--mem-soft);color:var(--mem)}
+.role.observer{background:var(--obs-soft);color:var(--obs)}
+.tag{font-size:.8125rem;border:1px solid var(--line);border-radius:999px;padding:1px 9px;color:var(--muted)}
+.where{font-family:var(--display);font-weight:800;font-size:1.75rem;line-height:1.1;margin:0 0 4px}
+.setup{border-left:4px solid var(--line);padding-left:14px}
+.clock{font-family:var(--display);font-weight:800;font-size:2.5rem;font-variant-numeric:tabular-nums;line-height:1}
+.notice{background:var(--warn-soft);color:var(--ink);border-left:4px solid var(--warn);padding:12px 14px;border-radius:8px;margin:12px 0}
+/* The card: the one tactile moment */
+.cardwrap{perspective:1200px;margin:16px 0}
+.card{position:relative;border-radius:16px;min-height:220px;transition:transform .55s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+.card.open{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.seal{width:100%;height:100%;border:0;cursor:pointer;color:var(--seal-ink);font:inherit;border-radius:16px;
+  background:repeating-linear-gradient(135deg,var(--seal) 0 14px,var(--seal-line) 14px 16px);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:20px}
+.seal .big{font-family:var(--display);font-weight:800;font-size:1.5rem}
+.inside{transform:rotateY(180deg);background:var(--surface);border:2px solid var(--rc,var(--ink));padding:20px;overflow:auto;position:relative}
+.card.open .inside{position:relative}
+.card.open .front{visibility:hidden}
+.inside .who{font-family:var(--display);font-weight:800;font-size:1.375rem;color:var(--rc);margin-bottom:8px}
+.inside.manager{--rc:var(--mgr)} .inside.member{--rc:var(--mem)} .inside.observer{--rc:var(--obs)}
+.twist{display:none;border:2px solid var(--mem);background:var(--mem-soft);border-radius:12px;padding:14px 16px;margin:14px 0}
+.twist.show{display:block}
+.twist .line{font-family:var(--display);font-weight:700;font-size:1.25rem;line-height:1.25}
+.watch{list-style:none;padding:0;margin:8px 0;display:grid;gap:12px}
+textarea{width:100%;font:inherit;font-size:1rem;border:1.5px solid var(--line);border-radius:10px;padding:10px;background:var(--surface);color:var(--ink);min-height:64px;resize:vertical}
+label.q{display:block;font-weight:700;margin:12px 0 4px}
+.order{counter-reset:o;list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.order>li{counter-increment:o;position:relative;padding-left:38px}
+.order>li::before{content:counter(o);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);font-weight:700;display:grid;place-items:center;font-size:.875rem}
+.reveal{display:grid;gap:12px;margin-top:10px}
+.reveal .inside{transform:none;border-radius:14px}
+.groups{display:grid;gap:10px;margin-top:12px}
+.g{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.g h3{margin:0 0 4px}
+.stat{font-family:var(--display);font-weight:800;font-size:1.5rem}
+.stats{display:flex;gap:22px;margin:6px 0 12px}
+.reg{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.linkbtn{font:inherit;background:none;border:0;color:var(--mgr);cursor:pointer;text-decoration:underline;padding:4px}
+.pick{border:1px solid var(--line);border-radius:12px;padding:8px 14px 12px;margin:12px 0}
+.pick legend{padding:0 6px;margin:0}
+.pickrow{display:flex;gap:10px;align-items:center;padding:6px 0;cursor:pointer}
+.pickrow input{width:20px;height:20px;accent-color:var(--ink);flex:none}
+.linkrow{display:flex;gap:8px;align-items:center;margin-top:6px}
+.linkrow input{flex:1;min-width:0;font:inherit;font-size:.875rem;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--muted)}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.names{grid-template-columns:1fr}}
+.bigclock{font-family:var(--display);font-weight:800;font-size:clamp(4rem,18vw,7rem);line-height:1;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion: reduce){.card{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Hard conversations, rehearsed</h1>
+  <div id="app"><p class="muted">Loading…</p></div>
+</main>
+
+<script>
+const CLAUDE_BASE = "https://claude.ai/artifact/VVVT1VimYeLFxVVtpS6p7q";
+// When the page is hosted anywhere other than claude.ai, build links from its own address.
+const HOSTED_ELSEWHERE = /^https?:$/.test(location.protocol) && !/claude/i.test(location.hostname);
+const BASE = HOSTED_ELSEWHERE ? location.origin + location.pathname : CLAUDE_BASE;
+const S_ = (label, text) => ({label, text});
+const SCENARIOS = {
+  A:{
+    title:"The performance plan",
+    labels:{manager:"Manager", member:"Team member"},
+    setup:"Jordan has been an account manager on Alex’s team for 18 months. Alex became Jordan’s manager six months ago, when the previous manager moved to another team. Alex has booked a 45-minute meeting for Friday morning called “Performance check-in.”",
+    manager:{name:"Alex", title:"Alex, the manager", sections:[
+      S_("Background","Over the last two quarters, Jordan’s client renewal rate is 71%, against a team target of 85% and a team average of 88%. Three clients have complained about slow replies: Jordan’s average reply time is two days, against a one-day standard. Jordan’s account notes are often missing, so nobody could step in when Jordan was off sick last month."),
+      S_("Your secret","You’ve raised this before, but softly. In two 1:1s you said things like “it’d be good to tighten up response times” and moved on. You never said Jordan was below expectations. HR has now approved a 60-day Performance Improvement Plan, and you have to tell Jordan today."),
+      S_("What you want","Jordan to leave understanding three things. Performance is below the bar. The plan is real, with clear targets. You genuinely want Jordan to succeed. You’ll send the written plan after the meeting."),
+      S_("Watch out for","Apologising the message away, burying it in compliments, or debating every number.")]},
+    member:{name:"Jordan", title:"Jordan, the team member", sections:[
+      S_("Background","You think you’re doing well. Your previous manager rated you “meets expectations” last year and called you “great with clients.” Last month a client, Fernway, thanked you by name in the company Slack, and your director reacted with a heart."),
+      S_("Your view of the numbers","You were given the toughest accounts on the team. Two of the lost renewals were budget cuts nobody could have saved."),
+      S_("Your secret","When your colleague Mei went on parental leave three months ago, several of her clients kept emailing you directly. You’ve been quietly handling them, which is why your replies slowed down. Nobody asked you to, and you haven’t mentioned it."),
+      S_("How you’d react","You came in expecting a normal check-in, so this lands as a shock, and you’ll push back with your evidence. If Alex seems vague or keeps softening it, you’ll assume it isn’t that serious. If Alex is direct and seems genuinely curious about your side, you’d feel safe enough to mention Mei’s clients and start thinking about what a plan could look like. If it feels like the decision’s already made and you’re not being heard, you’ll get defensive and wonder aloud whether you need HR in the room.")]},
+    twist:"“Why is this the first time I’m hearing it’s this serious?”",
+    look:"Did Alex own the earlier vague feedback without backing off the plan?"
+  },
+  B:{
+    title:"From peer to boss",
+    labels:{manager:"Manager", member:"Team member"},
+    setup:"Three months ago, Jess was promoted to lead the six-person client services team. Before that, she and Sam sat next to each other for three years. They’re friends outside work, and their families have had dinner together. Sam has joined three of the last five 9am client calls 10–15 minutes late. On the last one, Sam joked “you know me, useless before coffee” in front of the client. Jess has asked Sam to grab a quick coffee.",
+    manager:{name:"Jess", title:"Jess, the manager", sections:[
+      S_("Background","You got the role over Sam and two external candidates. Your manager told you privately that the team needs “someone who’ll hold the line on standards.”"),
+      S_("Your secret","Last week Priya, the new joiner, came in late to a client call. When you mentioned it, she said “Sam does it all the time.” Separately, Brightwell, the client, emailed you asking whether the 9am slot “still works for your team.”"),
+      S_("What you want","The lateness to stop, Sam on board rather than resentful, and the friendship intact if possible."),
+      S_("Watch out for","Turning it into a joke, or overcorrecting into a formality that doesn’t sound like you.")]},
+    member:{name:"Sam", title:"Sam, the team member", sections:[
+      S_("Background","You applied for the lead role too and were told you were “a close second.” You still feel it should have been you: you’ve been here longer and know the clients better."),
+      S_("Your secret","This term your daughter’s school moved its start time to 8:45. On the days your partner is in the office, you can’t make a 9:00 call. You haven’t told anyone, partly because asking Jess for flexibility feels like admitting she’s your boss now. Part of you is also testing whether she’ll “go corporate” on you."),
+      S_("How you’d react","You’ll lean on the friendship: “Come on, it’s me.” If Jess sounds stiff or scripted, you’d get a bit sarcastic. If she’s warm but clear and actually asks what’s going on, you’d feel able to mention the school run, and you’d be open to a fix like moving the calls.")]},
+    twist:"“You never had a problem with this when we were on the same level.”",
+    look:"Did Jess stay warm without backing down?"
+  },
+  C:{
+    title:"The brilliant jerk",
+    labels:{manager:"Manager", member:"Team member"},
+    setup:"Riley is a senior analyst on Morgan’s team and has had the best numbers in the department two years running, including leading the pricing model that won the Garrick contract. Two colleagues have separately raised concerns that Riley is dismissive in meetings and rewrites their work without asking. One of them has asked HR about moving teams. Morgan has set up a 1:1.",
+    manager:{name:"Morgan", title:"Morgan, the manager", sections:[
+      S_("Background","You inherited Riley when you took over the team a year ago. Riley’s work is excellent, and clients ask for Riley by name."),
+      S_("Your secret","The colleague asking to move is Tom, a strong junior hire you’d hate to lose. HR has told you that one more complaint about Riley will have to be logged formally."),
+      S_("Your evidence","In Thursday’s pricing review, after Tom presented his analysis, Riley said “let’s hear from someone who’s actually read the data.” Tom didn’t speak for the rest of the meeting. You also know Riley rewrote Aisha’s client deck the night before it was due, without asking her."),
+      S_("What you want","Riley to see the impact and change how they work with others, without losing their drive."),
+      S_("Watch out for","Hiding behind “people are saying,” or letting Riley’s results win the argument.")]},
+    member:{name:"Riley", title:"Riley, the team member", sections:[
+      S_("Background","You deliver more than anyone, and you think standards on the team have slipped. You believe rewriting Aisha’s deck saved the account, and Tom’s numbers on Thursday really were wrong."),
+      S_("Your secret","Last year you were passed over for team lead when Morgan was hired from outside, and you were told you needed “more polish with people.” It still stings, and you’ve quietly started talking to a recruiter."),
+      S_("How you’d react","You’ll push back with your results and with examples of others’ weak work. If Morgan is vague or mentions anonymous complaints, you’d brush it off: “So who’s complaining?” If Morgan names a specific moment and what it did to Tom, you’d go quiet, and eventually ask what Morgan actually wants you to do differently. If Morgan connects this to where you want your career to go, you’d become genuinely interested.")]},
+    twist:"“If results aren’t what matters here, maybe I should look elsewhere.”",
+    look:"Did Morgan use the specific moment, or fall back on general complaints?"
+  },
+  D:{
+    title:"The cross-team handoff",
+    labels:{manager:"Sales lead", member:"Delivery lead"},
+    setup:"Blake leads a Sales team; Jamie leads a Delivery team. They’re peers who report to different directors. Two weeks ago, Blake’s team signed Northwind for a custom reporting dashboard, with a 1 March go-live date written into the contract. Jamie’s team says the earliest realistic date is mid-April. Northwind has escalated, copying both directors. Blake has asked Jamie for 30 minutes.",
+    manager:{name:"Blake", title:"Blake, the Sales lead", sections:[
+      S_("Background","Your team hit 140% of target this quarter, largely thanks to Northwind. Before signing, you checked the date with Delivery: Chris, one of Jamie’s developers, replied in Slack “should be doable.”"),
+      S_("Your secret","Northwind told you the 1 March date is tied to their board meeting, and you never passed that on to Delivery. Your quarterly bonus also depends on Northwind not cancelling in the first 90 days. This morning your director told you to “sort Delivery out.”"),
+      S_("What you want","A credible date you can give Northwind by end of day, and a way of working with Delivery so this doesn’t happen again."),
+      S_("Watch out for","Blaming, threatening to escalate, or agreeing a fix that only works for your side.")]},
+    member:{name:"Jamie", title:"Jamie, the Delivery lead", sections:[
+      S_("Background","Your team of five is already at capacity on two other launches. Chris is a junior developer and isn’t authorised to commit to dates. You’ve asked Sales twice this year to send estimate requests through you."),
+      S_("Your secret","Your team worked the last two weekends to get part of the Northwind dashboard ready, and nobody from Sales has acknowledged it. On Monday, Leila, one of your senior engineers, told you she’s thinking of leaving because of “constant fire drills from Sales.” You also know a basic version, without the custom exports, could realistically go live on 1 March."),
+      S_("How you’d react","You’re tired and you expect to be blamed. If Blake comes in hot or hints at going to your director, you’ll hold firm on mid-April and point to the process. If Blake recognises your team’s weekend work and that the date was promised without you, you’d soften and might offer the basic version. If Blake asks what your team needs, you’d raise how estimates should work from now on.")]},
+    twist:"“Honestly, my team is sick of cleaning up after Sales.”",
+    look:"Did either of them acknowledge the pressure the other team is under?"
+  },
+  E:{
+    title:"The long-standing low performer",
+    labels:{manager:"Manager", member:"Team member"},
+    setup:"Owen has been a finance operations specialist on the team for six years, and every review has said “meets expectations.” Nadia became the team’s manager four months ago. She has booked a 45-minute 1:1 with Owen called “Performance and development.” It’s the first time anyone has put that title on a meeting with him.",
+    manager:{name:"Nadia", title:"Nadia, the manager", sections:[
+      S_("Background","For at least two years, Owen has processed about 60% of the team’s average monthly volume, with an error rate of 9% against a team average of 2%. His two previous managers rated him “meets” and never wrote down a single concern."),
+      S_("Your evidence","Last month, an error in Owen’s supplier payment run paid one supplier twice, £18,400, and it took a week to recover. The same month, two of his month-end reconciliations were late, and Hana had to finish them over the weekend. When the new system launched, the whole team was offered two training sessions; Owen signed up for one and didn’t attend. Gary’s old 1:1 notes mention “accuracy” twice, briefly."),
+      S_("Your secret","Hana and Leo spend about three hours a week fixing Owen’s errors, and they’ve told you they’re close to raising a formal complaint. Your director has asked you to start a formal performance process in March if nothing has changed."),
+      S_("What you want","Owen to understand that his work is well below the standard and has been for a long time. Acknowledge that the feedback he got in the past wasn’t clear enough. Agree a specific eight-week plan with proper training and weekly check-ins."),
+      S_("Watch out for","Being so apologetic about the past that the message gets lost, trying to prove he did get support, re-arguing old reviews, or letting his defensiveness end the conversation.")]},
+    member:{name:"Owen", title:"Owen, the team member", sections:[
+      S_("Background","Six years, and every review said “meets expectations.” Your previous manager, Gary, told you more than once: “Don’t worry about the numbers, you’re the one who knows how everything works.”"),
+      S_("How you see it","You feel nobody has ever really guided you. Nobody sat down with you to explain what “good” looks like, or helped you properly get to grips with the new finance system when it came in two years ago. Most of the time you’ve felt left to work things out on your own."),
+      S_("Your secret","You know you struggle with the new system, and you’re embarrassed about it. You’ve been quietly staying late to double-check your work, which is why this feels so unfair. The double payment was your mistake, and you’ve been dreading someone bringing it up."),
+      S_("How you’d react","You’re defensive from the start. You’ll point to six years of reviews and say this is the first you’ve heard of it, and say you’ve never had proper guidance or clear standards. If Nadia just repeats the numbers, or tries to prove you were given support, you’ll dig in: “So I’m being punished because nobody ever helped me?” If she takes your sense of being left on your own seriously, even without agreeing it was all their fault, you’d start to calm down, and if she asks what’s been hard, you might admit the system has been a struggle. If she raises the double payment before you’ve calmed down, you’ll get angry.")]},
+    twist:"“So six years of reviews were all lies?”",
+    look:"Did Nadia take Owen’s feeling seriously without letting it cancel the message?"
+  },
+  F:{
+    title:"The sudden drop",
+    labels:{manager:"Manager", member:"Team member"},
+    setup:"Leah has been an account executive on Marcus’s sales team for three years, usually hitting 95–105% of her monthly target. In each of the last two months she has hit 58%. She has also missed two team pipeline meetings, and her updates in the sales system have stopped. Marcus has booked a 1:1.",
+    manager:{name:"Marcus", title:"Marcus, the manager", sections:[
+      S_("Background","Leah has been one of your most reliable people, so this is a sharp change. The quarter ends in four weeks. The team is 20% behind target, mostly because of her numbers, and your director asked about it on Monday’s forecast call."),
+      S_("Your evidence","Last week Leah missed a renewal call with Castell, her largest remaining client. Castell has now asked for a different account executive. She hasn’t updated the sales system in three weeks, so you can’t forecast her pipeline."),
+      S_("Your secret","Two months ago, leadership moved Leah’s three biggest accounts to a new senior hire. You argued against it and lost, then announced it in a short team email without speaking to Leah directly. HR has told you that if her numbers are still below 60% at quarter end, a formal improvement plan is the expected next step."),
+      S_("What you want","Leah to understand how serious this is, including Castell, and what happens if it continues. Find out what’s going on. Agree a plan for the next four weeks."),
+      S_("Watch out for","Leading with the HR consequence before you’ve listened, or being so understanding that the numbers never get said.")]},
+    member:{name:"Leah", title:"Leah, the team member", sections:[
+      S_("Background","You built those three accounts over two years. Losing them by group email, with no conversation, felt like being told you didn’t matter. Your remaining accounts are smaller and slower, and you’ve stopped putting in the extra effort."),
+      S_("Your defence","The accounts you have now could never hit that target. Nobody explained the move. Castell were always difficult."),
+      S_("Your secret","You missed the Castell call because you were at a first interview with a competitor, and you have a second interview on Friday. You’re ashamed of the missed call. You’d actually rather stay, if you felt valued and had a fair shot at your target."),
+      S_("How you’d react","You’re cool and guarded. If Marcus leads with numbers and consequences, you’ll say little, and point out that the numbers were always going to drop once your accounts were taken. If he brings up Castell bluntly, you’ll get defensive. If he acknowledges how the account move was handled, or asks how it landed, you’d open up about feeling sidelined. If he seems to genuinely want to keep you, you might hint that you’ve been talking to other companies.")]},
+    twist:"“Do you actually want me on this team, or is this just paperwork?”",
+    look:"Did Marcus get to the cause without losing the message about the numbers?"
+  }
+};
+const KEYS = Object.keys(SCENARIOS);
+const RUBRIC = ["What went well?","What could have gone better?","What could have made this worse?"];
+const FKEY = "larp-facilitator-v2";
+function lookFor(sc){
+  const a=sc.manager.name, b=sc.member.name;
+  return [
+    "How did "+a+" open: with a clear purpose, or a verdict?",
+    "Was "+a+" specific: real examples and their impact?",
+    "When did "+b+" open up or shut down, and what caused it?",
+    "How did "+a+" handle the twist?",
+    sc.look
+  ];
+}
+function roleLabel(sc, role){ return role==="observer" ? "Observer" : sc.labels[role]; }
+
+function h(tag, attrs, ...kids){
+  const el=document.createElement(tag);
+  for(const [k,v] of Object.entries(attrs||{})){
+    if(v==null||v===false) continue;
+    if(k==="class") el.className=v;
+    else if(k==="text") el.textContent=v;
+    else if(k==="value") el.value=v;
+    else if(k.startsWith("on")) el.addEventListener(k.slice(2),v);
+    else el.setAttribute(k, v===true?"":v);
+  }
+  for(const k of kids.flat()){ if(k==null||k===false) continue; el.append(k.nodeType?k:document.createTextNode(String(k))); }
+  return el;
+}
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function store(k,v){ try{localStorage.setItem(k,v);}catch(e){} }
+function load(k){ try{return localStorage.getItem(k)||"";}catch(e){return "";} }
+function fmt(ms){ ms=Math.max(0,ms); const s=Math.ceil(ms/1000); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+function enc(obj){ const b=btoa(unescape(encodeURIComponent(JSON.stringify(obj)))); return b.replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+function dec(str){ let b=str.replace(/-/g,"+").replace(/_/g,"/"); while(b.length%4) b+="="; return JSON.parse(decodeURIComponent(escape(atob(b)))); }
+const membersOf=g=>[g.manager,g.member,...(g.observers||[])].filter(Boolean);
+const MODE_NAME={room:"Room group ",remote:"Remote group ",mixed:"Mixed group "};
+const groupLabel=g=>(MODE_NAME[g.mode]||"Group ")+g.no;
+const app=()=>document.getElementById("app");
+function cardSections(c){ return c.sections.map(s=>h("p",{}, h("strong",{text:s.label+": "}), s.text)); }
+
+/* ===================== Facilitator ===================== */
+let F = {room:"", remote:"", scenarioMode:"mixed", groups:[], round:"", playMin:6, twistMin:3};
+try{ const saved=JSON.parse(load(FKEY)||"null"); if(saved) F={...F,...saved}; }catch(e){}
+const saveF=()=>store(FKEY, JSON.stringify(F));
+let clockStart=null;
+
+function parseNames(txt){ const seen=new Set(); return txt.split(/\n|,/).map(s=>s.trim()).filter(s=>s&&!seen.has(s.toLowerCase())&&seen.add(s.toLowerCase())); }
+function makeGroups(ids, mode, startNo){
+  const out=[]; let i=0, no=startNo;
+  while(ids.length-i>=3){ out.push({mode,no:no++,manager:ids[i],member:ids[i+1],observers:[ids[i+2]]}); i+=3; }
+  return {out, rest:ids.slice(i), no};
+}
+function giveScenarios(list){ const sel=(F.selected||KEYS).filter(k=>SCENARIOS[k]); const keys=shuffle(sel.length?sel:KEYS); list.forEach((g,i)=>{ if(!SCENARIOS[g.scenario]) g.scenario=keys[i%keys.length]; }); }
+function pools(){ return F.mix ? [["mixed", parseNames(F.room).concat(parseNames(F.remote))]] : [["room",parseNames(F.room)],["remote",parseNames(F.remote)]]; }
+function settle(gs){
+  const rem=new Set(parseNames(F.remote).map(n=>n.toLowerCase()));
+  for(const g of gs){ const r=membersOf(g).map(n=>rem.has(n.toLowerCase())); g.mode=r.every(Boolean)?"remote":r.some(Boolean)?"mixed":"room"; }
+  return gs;
+}
+function assignAll(){
+  const all=[];
+  for(const [pool,names] of pools()){
+    const ids=shuffle(names);
+    const {out,rest,no}=makeGroups(ids,pool,1);
+    if(rest.length===2 && out.length<2) out.push({mode:pool,no,manager:rest[0],member:rest[1],observers:[]});
+    else rest.forEach((id,i)=>{ if(out[i]) out[i].observers.push(id); });
+    out.forEach(g=>g.pool=pool);
+    all.push(...out);
+  }
+  giveScenarios(all, F.scenarioMode);
+  return settle(all);
+}
+function placeLatecomers(){
+  const gs=JSON.parse(JSON.stringify(F.groups));
+  const placed=new Set(gs.flatMap(membersOf).map(n=>n.toLowerCase()));
+  const inPool=(g,pool)=> pool==="mixed" ? true : (g.pool||g.mode)===pool;
+  for(const [pool,names] of pools()){
+    const fresh=shuffle(names.filter(n=>!placed.has(n.toLowerCase())));
+    if(!fresh.length) continue;
+    const startNo=gs.filter(g=>inPool(g,pool)).reduce((m,g)=>Math.max(m,g.no),0)+1;
+    const {out,rest,no}=makeGroups(fresh,pool,startNo);
+    out.forEach(g=>g.pool=pool);
+    giveScenarios(out,F.scenarioMode); gs.push(...out);
+    const targets=gs.filter(g=>inPool(g,pool));
+    if(rest.length===2 && !targets.length){ const g={mode:pool,pool,no,manager:rest[0],member:rest[1],observers:[]}; giveScenarios([g],F.scenarioMode); gs.push(g); }
+    else for(const n of rest){ if(!targets.length) continue; targets.sort((a,b)=>a.observers.length-b.observers.length)[0].observers.push(n); }
+  }
+  return settle(gs);
+}
+function linkFor(g, name, role){
+  return BASE+"#p"+enc({n:name, r:role, s:g.scenario, g:g.no, m:g.mode, mg:g.manager, mb:g.member, ob:g.observers||[], k:F.round, tw:F.twistMin||3});
+}
+function unplaced(){
+  const placed=new Set(F.groups.flatMap(membersOf).map(n=>n.toLowerCase()));
+  const out=[]; for(const mode of ["room","remote"]) for(const n of parseNames(F[mode])) if(!placed.has(n.toLowerCase())) out.push([n,mode]);
+  return out;
+}
+function allLinksText(){
+  const lines=[];
+  for(const g of F.groups){
+    lines.push(groupLabel(g)+(g.mode!=="room"?" (breakout room "+g.no+")":""));
+    lines.push("  "+g.manager+": "+linkFor(g,g.manager,"manager"));
+    lines.push("  "+g.member+": "+linkFor(g,g.member,"member"));
+    for(const o of g.observers||[]) lines.push("  "+o+": "+linkFor(g,o,"observer"));
+    lines.push("");
+  }
+  return lines.join("\n").trim();
+}
+async function copyText(txt, btn){
+  let ok=false;
+  try{ await navigator.clipboard.writeText(txt); ok=true; }catch(e){
+    try{ const t=h("textarea",{value:txt,style:"position:fixed;opacity:0"}); document.body.append(t); t.select(); ok=document.execCommand("copy"); t.remove(); }catch(e2){}
+  }
+  if(btn){ const old=btn.textContent; btn.textContent= ok?"Copied":"Select and copy it manually"; setTimeout(()=>btn.textContent=old,1800); }
+}
+function linkRow(g,name,role){
+  const sc=SCENARIOS[g.scenario];
+  const url=linkFor(g,name,role);
+  const inp=h("input",{readonly:true,value:url,"aria-label":"Private link for "+name,onfocus:e=>e.target.select()});
+  const btn=h("button",{class:"btn quiet",style:"min-height:38px;padding:6px 12px"},"Copy");
+  btn.addEventListener("click",()=>copyText(url,btn));
+  return h("li",{style:"display:block"},
+    h("div",{class:"row",style:"gap:8px"}, h("span",{class:"role "+role,text:roleLabel(sc,role)}), h("strong",{text:name})),
+    h("div",{class:"linkrow"}, inp, btn));
+}
+function renderFacilitator(){
+  const root=h("div",{});
+  root.append(h("p",{class:"lede",text:"Facilitator setup. Paste in who’s taking part, shuffle them into groups, then send each person their private link. Participants don’t need an account."}));
+
+  const roomTA=h("textarea",{rows:6,id:"room","aria-label":"Names in the room",placeholder:"One name per line"}); roomTA.value=F.room;
+  const remTA=h("textarea",{rows:6,id:"remote","aria-label":"Names joining remotely",placeholder:"One name per line"}); remTA.value=F.remote;
+  const counts=h("p",{class:"muted small"});
+  const updCounts=()=>{ counts.textContent=parseNames(roomTA.value).length+" in the room, "+parseNames(remTA.value).length+" remote"; };
+  roomTA.addEventListener("input",()=>{F.room=roomTA.value; saveF(); updCounts();});
+  remTA.addEventListener("input",()=>{F.remote=remTA.value; saveF(); updCounts();});
+  updCounts();
+  if(!Array.isArray(F.selected)) F.selected=KEYS.slice();
+  const sel=h("fieldset",{class:"pick"},
+    h("legend",{class:"q",text:"Scenarios to hand out"}),
+    ...KEYS.map(k=>{ const id="sc-"+k; const cb=h("input",{type:"checkbox",id,checked:F.selected.includes(k)});
+      cb.addEventListener("change",()=>{ F.selected=KEYS.filter(x=> x===k ? cb.checked : F.selected.includes(x)); saveF(); });
+      return h("label",{class:"pickrow",for:id}, cb, h("span",{text:SCENARIOS[k].title})); }),
+    h("p",{class:"muted small",style:"margin:6px 0 0",text:"Groups get the ticked scenarios in rotation, so with more groups than scenarios some repeat. Tick just one to give every group the same scenario."}));
+
+  const has=F.groups.length>0;
+  const assign=()=>{ if(!(F.selected||[]).length){ alert("Tick at least one scenario first."); return; } const n=parseNames(F.room).length+parseNames(F.remote).length; if(n<2){ alert("Add at least two names first."); return; }
+    if(has && !confirm("Reshuffle everyone? Links you’ve already sent will stop matching the new groups.")) return;
+    F.groups=assignAll(); F.round=Math.random().toString(36).slice(2,8); saveF(); renderFacilitator(); };
+  const late=()=>{ F.groups=placeLatecomers(); saveF(); renderFacilitator(); };
+  const clear=()=>{ if(!confirm("Clear all names and groups?")) return; F={...F,room:"",remote:"",groups:[],round:""}; saveF(); renderFacilitator(); };
+
+  root.append(h("section",{class:"panel"},
+    h("h2",{text:"1. Who’s taking part"}),
+    h("p",{class:"muted small",text:"Commas or new lines both work. Keep the room and remote separate, or mix them if in-room people have a laptop and headphones to join a breakout room."}),
+    h("div",{class:"names"},
+      h("div",{}, h("label",{class:"q",for:"room",text:"In the room"}), roomTA),
+      h("div",{}, h("label",{class:"q",for:"remote",text:"Remote"}), remTA)),
+    counts,
+    sel,
+    h("div",{class:"row"},
+      h("select",{"aria-label":"Room and remote",onchange:e=>{F.mix=e.target.value==="mix"; saveF();}},
+        h("option",{value:"sep",selected:!F.mix,text:"Keep room and remote separate"}),
+        h("option",{value:"mix",selected:!!F.mix,text:"Mix room and remote"})),
+      h("select",{"aria-label":"When the twist happens",onchange:e=>{F.twistMin=+e.target.value; saveF(); renderFacilitator();}},
+        ...[2,3,4,5].map(m=>h("option",{value:m,selected:m===(F.twistMin||3),text:"Twist "+m+" min into the conversation"}))),
+      h("button",{class:"btn primary",onclick:assign}, has?"Reshuffle groups":"Assign groups")),
+    h("p",{class:"muted small",style:"margin-top:8px",text:"Set the twist time before you send links: it’s written into each person’s instructions."})
+  ));
+
+  if(has){
+    const waiting=unplaced();
+    const sec=h("section",{},
+      h("h2",{text:"2. Send each person their link"}),
+      h("p",{class:"muted small",text:"Each link opens only that person’s card. Send them as private messages, ideally before this section starts, so people can read their card ahead. Remote and mixed groups use the breakout room with the same number."}));
+    const allBtn=h("button",{class:"btn"},"Copy all links as a list");
+    allBtn.addEventListener("click",()=>copyText(allLinksText(),allBtn));
+    sec.append(h("div",{class:"row"}, allBtn,
+      waiting.length?h("button",{class:"btn",onclick:late},"Place "+waiting.length+" new name"+(waiting.length>1?"s":"")):null,
+      h("button",{class:"btn quiet",onclick:clear},"Clear everything")));
+    if(waiting.length){
+      sec.append(h("div",{class:"notice"},
+        "Not in a group yet: "+waiting.map(([n,m])=>n+" ("+(m==="room"?"room":"remote")+")").join(", ")+". ",
+        "“Place new names” adds them without reshuffling. People added later join as observers or a new group; teammates’ screens won’t list them, so introduce them."));
+    }
+    const list=h("div",{class:"groups"});
+    for(const g of F.groups){
+      list.append(h("div",{class:"g"},
+        h("h3",{text:groupLabel(g)+": "+SCENARIOS[g.scenario].title}),
+        h("ul",{class:"people"},
+          linkRow(g,g.manager,"manager"), linkRow(g,g.member,"member"),
+          ...(g.observers||[]).map(o=>linkRow(g,o,"observer")),
+          (g.observers||[]).length?null:h("li",{class:"muted small",text:"No observer: the pair debriefs together."}))));
+    }
+    sec.append(list);
+    root.append(sec);
+
+    const durSel=h("select",{"aria-label":"Conversation length",onchange:e=>{F.playMin=+e.target.value; saveF(); clockStart=null; tick();}},
+      ...[4,5,6,7].map(m=>h("option",{value:m,selected:m===F.playMin,text:m+" minute conversation"})));
+    root.append(h("section",{class:"panel"},
+      h("h2",{text:"3. Run the round (12–15 minutes)"}),
+      h("ol",{class:"order",style:"margin-bottom:16px"},
+        h("li",{}, h("strong",{text:"Find your group (2 min). "}), "Room groups find a space. Remote and mixed groups go to their breakout room; in-room people in a mixed group join on their own device with headphones. Everyone opens their link."),
+        h("li",{}, h("strong",{text:"Read your card (2–3 min). "}), "Skip this if people read ahead."),
+        h("li",{}, h("strong",{text:"Conversation ("+F.playMin+" min). "}), "Say go and start the timer. Second players tap “Reveal the twist” "+(F.twistMin||3)+" minutes in. You can also call “Twist now” aloud, or broadcast it to breakout rooms, to keep everyone in step."),
+        h("li",{}, h("strong",{text:"Debrief (3–4 min). "}), "Call time and say “Go to debrief.” Everyone taps the button; that shows the questions and both cards.")),
+      h("div",{class:"bigclock",id:"bigclock",text:fmt(F.playMin*60000)}),
+      h("p",{class:"muted",id:"bignote",text:"Share your screen with this timer if it helps."}),
+      h("div",{class:"row",style:"margin-top:12px"},
+        durSel,
+        h("button",{class:"btn primary",onclick:()=>{clockStart=Date.now(); tick();}},"Start timer"),
+        h("button",{class:"btn quiet",onclick:()=>{clockStart=null; tick();}},"Reset"))));
+  }
+  root.append(librarySection());
+  app().replaceChildren(root);
+}
+
+function scenarioDetails(k){
+  const sc=SCENARIOS[k];
+  const card=(c,cls)=>h("div",{class:"inside "+cls,style:"transform:none;margin:10px 0"}, h("div",{class:"who",text:c.title}), ...cardSections(c));
+  return h("details",{class:"g"},
+    h("summary",{style:"cursor:pointer;font-family:var(--display);font-weight:700;font-size:1.0625rem"}, sc.title),
+    h("h3",{text:"Setup (everyone sees this)"}), h("p",{class:"setup",text:sc.setup}),
+    card(sc.manager,"manager"), card(sc.member,"member"),
+    h("p",{}, h("strong",{text:"Twist ("+sc.member.name+"): "}), sc.twist),
+    h("h3",{text:"The observer looks for"}), h("ul",{style:"padding-left:20px;margin:0"}, ...lookFor(sc).map(t=>h("li",{text:t}))));
+}
+function librarySection(){
+  const url=BASE+"#scenarios";
+  const btn=h("button",{class:"btn quiet",style:"min-height:38px;padding:6px 12px"},"Copy");
+  btn.addEventListener("click",()=>copyText(url,btn));
+  return h("section",{},
+    h("h2",{text:"Scenario library"}),
+    h("p",{class:"muted small",text:"Every scenario in full: the setup, both private cards, the twist and the observer prompts. Tap one to open it. This link opens just the library, handy for co-facilitators:"}),
+    h("div",{class:"linkrow",style:"margin-bottom:12px"}, h("input",{readonly:true,value:url,"aria-label":"Scenario library link",onfocus:e=>e.target.select()}), btn),
+    h("div",{class:"groups"}, ...KEYS.map(scenarioDetails)));
+}
+function renderLibraryPage(){
+  app().replaceChildren(h("div",{},
+    h("p",{class:"lede",text:"Every scenario in full, including both private cards. Don’t share this link with participants."}),
+    h("div",{class:"groups"}, ...KEYS.map(scenarioDetails))));
+}
+
+/* ===================== Participant ===================== */
+let P=null, pState={stage:"card", open:false, anim:false, twist:false};
+function pKey(){ return "larp-p-"+(P.k||"")+"-"+P.n; }
+function savePS(){ store(pKey(), JSON.stringify({stage:pState.stage, twist:pState.twist})); }
+function notesField(key, label){
+  const ta=h("textarea",{id:key,rows:2,"aria-label":label}); ta.value=load(key);
+  ta.addEventListener("input",()=>store(key,ta.value)); return ta;
+}
+function personRow(sc, name, role){ return h("li",{}, h("span",{text:name+(name===P.n?" (you)":"")}), h("span",{class:"role "+role,text:roleLabel(sc,role)})); }
+function cardInside(sc, role){
+  const box=h("div",{class:"inside "+role});
+  if(role==="observer"){
+    box.append(h("div",{class:"who",text:"You’re the observer"}),
+      h("p",{text:"You know the public situation, not either person’s secrets. Watch the whole conversation with the three questions below in mind, and jot down exact words rather than opinions."}),
+      h("p",{}, h("strong",{text:"The twist: "}), "about "+(P.tw||3)+" minutes in, "+sc.member.name+" will say "+sc.twist+" If they seem to have lost track of time, give them a nod. Watch how "+sc.manager.name+" responds."));
+  } else {
+    const c=sc[role];
+    box.append(h("div",{class:"who",text:"You’re "+c.title.replace(/^[^,]+, /, c.name+", ")}), ...cardSections(c),
+      h("p",{class:"muted small",text:"Keep this to yourself. The other person has their own card."}));
+  }
+  return box;
+}
+function observerTools(sc){
+  const sec=h("section",{style:"margin-top:20px"});
+  sec.append(h("h2",{text:"Keep in mind while you watch"}),
+    h("ul",{style:"margin:0 0 14px;padding-left:20px"}, ...lookFor(sc).map(t=>h("li",{text:t}))),
+    h("h3",{text:"Your notes"}));
+  RUBRIC.forEach((q,i)=>{ const k=pKey()+"-rub-"+i; sec.append(h("label",{class:"q",for:k,text:q}), notesField(k,q)); });
+  sec.append(h("p",{class:"muted small",text:"Notes stay on this device and carry into the debrief."}));
+  return sec;
+}
+function renderParticipant(){
+  const sc=SCENARIOS[P.s]; const role=P.r;
+  if(!sc||!["manager","member","observer"].includes(role)){ app().replaceChildren(h("div",{class:"panel"}, h("h2",{text:"This link doesn’t work"}), h("p",{text:"Ask your facilitator to send it again."}))); return; }
+  const where = P.m==="remote" ? "Meet in breakout room "+P.g+"." : P.m==="mixed" ? "Your group is split between the room and online, so everyone joins breakout room "+P.g+". If you’re in the room, find a quiet spot and use headphones." : "Find these people and a quiet spot to sit together.";
+  const wrap=h("div",{});
+  wrap.append(h("p",{class:"lede",text:"Hi "+P.n+". This is your private page for the practice round. Each player knows things the other doesn’t, so listen closely."}));
+  wrap.append(h("section",{class:"panel"},
+    h("p",{class:"where",text:groupLabel({mode:P.m,no:P.g})}),
+    h("p",{class:"muted",text:where}),
+    h("ul",{class:"people"}, personRow(sc,P.mg,"manager"), personRow(sc,P.mb,"member"), ...(P.ob||[]).map(o=>personRow(sc,o,"observer")))));
+  wrap.append(h("section",{}, h("h2",{text:sc.title}), h("p",{class:"setup",text:sc.setup}), h("p",{class:"muted small",text:"Everyone in your group sees this part."})));
+
+  if(pState.stage==="debrief"){ wrap.append(renderDebrief(sc,role)); app().replaceChildren(wrap); return; }
+
+  wrap.append(h("p",{class:"muted",text: role==="observer"
+    ? "Read your card. When the facilitator says go, "+sc.manager.name+" starts the conversation."
+    : role==="manager" ? "Read your card and get into character. When the facilitator says go, you start the conversation."
+    : "Read your card and get into character. "+sc.manager.name+" will start the conversation."}));
+
+  const inner=cardInside(sc,role); inner.classList.add("face");
+  if(!pState.open) inner.setAttribute("aria-hidden","true");
+  const cardEl=h("div",{class:"card"+(pState.open&&!pState.anim?" open":"")},
+    h("div",{class:"face front"},
+      h("button",{class:"seal",tabindex:pState.open?"-1":null,"aria-label":"Open your private role card",onclick:()=>{pState.open=true;pState.anim=true;renderParticipant();}},
+        h("span",{class:"big",text:"Open your card"}),
+        h("span",{text:"Your role: "+roleLabel(sc,role)}),
+        h("span",{class:"small",text:"Make sure nobody’s reading over your shoulder"}))),
+    inner);
+  wrap.append(h("div",{class:"cardwrap"},cardEl));
+  if(pState.anim){ pState.anim=false; requestAnimationFrame(()=>requestAnimationFrame(()=>cardEl.classList.add("open"))); }
+  if(pState.open) wrap.append(h("button",{class:"btn quiet",onclick:()=>{pState.open=false;renderParticipant();}},"Cover my card"));
+
+  if(role==="member"){
+    if(pState.twist){
+      wrap.append(h("div",{class:"twist show"},
+        h("p",{class:"small",style:"margin:0 0 4px",text:"Work this line in now, in your own words:"}),
+        h("p",{class:"line",style:"margin:0",text:sc.twist})));
+    } else {
+      wrap.append(h("div",{class:"panel",style:"margin-top:16px"},
+        h("p",{style:"margin:0 0 10px",text:"There’s a twist. Note the time when the conversation starts, then tap this about "+(P.tw||3)+" minutes in, or sooner if your facilitator calls it."}),
+        h("button",{class:"btn",onclick:()=>{pState.twist=true; savePS(); renderParticipant();}},"Reveal the twist")));
+    }
+  }
+  if(role==="manager") wrap.append(h("p",{class:"muted small",style:"margin-top:14px",text:"Aim to finish with a clear next step before time is called."}));
+  if(role==="observer") wrap.append(observerTools(sc));
+
+  wrap.append(h("div",{class:"row",style:"margin-top:22px"},
+    h("button",{class:"btn primary",onclick:()=>{pState.stage="debrief"; savePS(); renderParticipant(); window.scrollTo(0,0);}},"Go to debrief"),
+    h("span",{class:"muted small",text:"Only when the facilitator calls time"})));
+  app().replaceChildren(wrap);
+}
+function renderDebrief(sc, role){
+  const sec=h("section",{});
+  sec.append(h("h2",{text:"Debrief"}),
+    h("p",{text:"Step out of character first: each person says “I’m stepping out.” Then go round in this order, each answering the three questions below."}));
+  const speakers=[["member","Start from inside your character: what made you want to open up, or shut down?"],
+                  ["manager","Which line would you keep, and which would you take back?"],
+                  ["observer","Use the exact lines you noted."]].filter(([r])=>r!=="observer"||(P.ob||[]).length);
+  const ol=h("ol",{class:"order"});
+  for(const [r,hint] of speakers) ol.append(h("li",{}, h("strong",{text:roleLabel(sc,r)+(r===role?" (you)":"")}), h("div",{class:"muted small",text:hint})));
+  sec.append(ol, h("h3",{text:role==="observer"?"Your notes":"Your answers"}));
+  RUBRIC.forEach((q,i)=>{ const k=pKey()+"-rub-"+i; sec.append(h("label",{class:"q",for:k,text:q}), notesField(k,q)); });
+  sec.append(h("p",{class:"muted small",text:"These stay on this device."}),
+    h("h3",{text:"Now read each other’s cards"}),
+    h("p",{class:"muted small",text:"What did the other person know that you didn’t? When could a question have brought it out?"}));
+  sec.append(h("div",{class:"reveal"},
+    h("div",{class:"inside manager"}, h("div",{class:"who",text:sc.manager.title}), ...cardSections(sc.manager)),
+    h("div",{class:"inside member"}, h("div",{class:"who",text:sc.member.title}), ...cardSections(sc.member), h("p",{}, h("strong",{text:"The twist: "}), sc.twist))));
+  sec.append(h("button",{class:"btn quiet",style:"margin-top:16px",onclick:()=>{pState.stage="card"; savePS(); renderParticipant();}},"Back to my card"));
+  return sec;
+}
+
+/* ===================== Loop ===================== */
+function tick(){
+  const bc=document.getElementById("bigclock");
+  if(!bc) return;
+  const total=(F.playMin||6)*60000;
+  const el=clockStart?Date.now()-clockStart:0;
+  bc.textContent=fmt(total-el);
+  const n=document.getElementById("bignote");
+  if(n){
+    if(!clockStart) n.textContent="Share your screen with this timer if it helps.";
+    else if(el>=total) n.textContent="Time. Tell everyone to tap “Go to debrief.”";
+    else if(el>=(F.twistMin||3)*60000) n.textContent="Twist time: second players should be revealing the twist now.";
+    else n.textContent="Conversations in progress.";
+  }
+}
+setInterval(tick,500);
+function route(){
+  const hash=(location.hash||"").slice(1);
+  if(hash.startsWith("p")){
+    try{ P=dec(hash.slice(1)); }catch(e){ P={}; }
+    pState={stage:"card",open:false,anim:false,twist:false};
+    if(P.n){ try{ const s=JSON.parse(load(pKey())||"null"); if(s){ pState.stage=s.stage==="debrief"?"debrief":"card"; pState.twist=!!s.twist; } }catch(e){} }
+    renderParticipant();
+  } else if(hash==="scenarios"){ P=null; renderLibraryPage(); } else { P=null; renderFacilitator(); }
+  tick();
+}
+window.addEventListener("hashchange",route);
+route();
+</script>
+</body>
+</html>
